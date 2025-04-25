@@ -5,4 +5,5 @@
 *.tbi
 *.rds
 *.Rhistory
+/Data
 !Data/raw/PlaceRawDataHere.txt
