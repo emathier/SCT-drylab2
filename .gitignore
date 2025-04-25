@@ -1,2 +1,4 @@
 # Ignore all contents of the Data/raw directory
 .Rproj.user
+Data/
+!Data/raw/placeDataHere.txt
