@@ -1,4 +1,8 @@
 # Ignore all contents of the Data/raw directory
 .Rproj.user
-Data/
+*.tsv
+*.gz
+*.tbi
+*.rds
+*.Rhistory
 !Data/raw/PlaceRawDataHere.txt
