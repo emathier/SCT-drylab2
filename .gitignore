@@ -5,5 +5,10 @@
 *.tbi
 *.rds
 *.Rhistory
+*.tsv.gz
+*.Rproj
+*.Rproj.user
+*.tsv.gz.tbi
+*.h5
 /Data
 !Data/raw/PlaceRawDataHere.txt
