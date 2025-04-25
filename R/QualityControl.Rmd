@@ -1,0 +1,23 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Imports
+
+## Data and libraries
+
+```{r}
+library(Seurat)
+library(Signac)
+library(Matrix)
+library(dplyr)
+library(hdf5r)
+library(AnnotationHub)
+library(ensembldb)
+library(biovizBase)
+
+seurat <- readRDS("Data/seurat_obj_preprocessed.rds") 
+```
+
+# 
