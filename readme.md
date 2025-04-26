@@ -28,7 +28,7 @@ To get started just follow these steps:
 1. Clone this repository onto your device:
    ```bash
    git clone https://github.com/emathier/SCT-drylab2.git
-   cd single-cell-multiome-organoids
+   cd SCT-drylab2
 
 2. Install the necessary R packages as described in the tutorial.
 
