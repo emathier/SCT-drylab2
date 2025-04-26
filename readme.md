@@ -21,6 +21,7 @@ The goal of the study was to characterize the cellular diversity, gene regulatio
 
 
 # Organisational
+## First setup.
 The tutorial for R analysis is provided at[scMultiome_analysis_vignette.git](https://github.com/quadbio/scMultiome_analysis_vignette.git)
 To get started just follow these steps:
 
@@ -30,6 +31,16 @@ To get started just follow these steps:
    cd single-cell-multiome-organoids
 
 2. Install the necessary R packages as described in the tutorial.
+
+3. Add the raw data from the polybox into the folder Data/raw/
+
+4. Run the R scripts. First run preprocessing and the QC.
+
+## Contribute in the future
+1. Make sure you get the newset version from github.
+   ```bash
+   git pull
+2. Make your changes and work. Please keep in mind that github has a filesize limit of 25/100 mb.
 3. Dont forget to save (= commit and push the changes) to this repository with
    ```bash
     git add .
