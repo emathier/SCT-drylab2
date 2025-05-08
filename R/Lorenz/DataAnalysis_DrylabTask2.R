@@ -39,7 +39,6 @@ library(Pando)
 library(doParallel)
 
 setwd("~/Library/CloudStorage/OneDrive-Personal/Documents/ETH/MSc Biotechnology/2025_SS/Single-Cell_Technologies/Drylab_Task2")
-#setwd("~")
 
 #-------------- Loading Data and create Seurat object -------------- 
 #Load sequencing data
@@ -106,7 +105,7 @@ VlnPlot(seurat,
         ncol = 5,
         pt.size = 0)
 
-ggsave("Plots/1_Quality_Control.pdf", units = "mm",  dpi = "print", width = 300, height = 210)
+##ggsave("Plots/1_Quality_Control.pdf", units = "mm",  dpi = "print", width = 300, height = 210)
 
 seurat <- subset(seurat,
                  subset = nFeature_RNA > 1000 &
@@ -138,7 +137,7 @@ p2 <- FeaturePlot(seurat,
 #p1 | p2
 p1
 
-ggsave("Plots/2_RNA_UMAP.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
+##ggsave("Plots/2_RNA_UMAP.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
 
 #--> don't need to do any data integration as we only have one replicate
 
@@ -169,7 +168,7 @@ p2 <- FeaturePlot(seurat,
 (p1 | p2) + patchwork::plot_layout(widths = c(2,3))
 p1
 
-ggsave("Plots/3_RNA_Clustering.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
+##ggsave("Plots/3_RNA_Clustering.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
 
 
 #-------------- Analysis of the ATAC assay -------------- 
@@ -188,7 +187,7 @@ p1 <- ElbowPlot(seurat, ndims = 30, reduction="lsi")
 p2 <- DepthCor(seurat, n = 30)
 p1 | p2
 
-ggsave("Plots/4_ElbowPlot_ATAC.pdf", units = "mm",  dpi = "print", width = 300, height = 150)
+##ggsave("Plots/4_ElbowPlot_ATAC.pdf", units = "mm",  dpi = "print", width = 300, height = 150)
 
 
 # First SVD component, which explains the most variance of the data, is usually 
@@ -212,7 +211,7 @@ p1 | p2
 
 p1
 
-ggsave("Plots/5_ATAC_UMAP.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
+##ggsave("Plots/5_ATAC_UMAP.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
 
 
 #predict gene expression from ATAC seq data alone
@@ -251,7 +250,7 @@ p3 <- FeaturePlot(seurat,
                   c("MAP2","OTX2","FOXA2","TH"),
                   reduction = "umap") & NoAxes() & NoLegend()
 p2
-ggsave("Plots/6_Int_RNA_ATAC_Clustering.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
+#ggsave("Plots/6_Int_RNA_ATAC_Clustering.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
 
 #Cell type gene marker identification based on RNA data
 DefaultAssay(seurat) <- "RNA"
@@ -341,7 +340,7 @@ ggplot(neuron_rna_exp, aes(x = feature, y = group, col=avgExpr, size = pct_in)) 
   theme_light() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-ggsave("Plots/7_DotPlot_CellType_Markers.pdf", units = "mm",  dpi = "print", width = 300, height = 200)
+#ggsave("Plots/7_DotPlot_CellType_Markers.pdf", units = "mm",  dpi = "print", width = 300, height = 200)
 
 celltypes <- c("Purkinje",
               "GABAergic neuron",
@@ -355,16 +354,14 @@ celltypes <- c("Purkinje",
               "G2M",
               "NPC")
 
+DE_ct$group <- celltypes[as.integer(DE_ct$group) + 1]
+
 new_ident <- setNames(celltypes,levels(seurat$wsnn_res.0.2))
 
 seurat$celltype <- new_ident[seurat$wsnn_res.0.2] %>% setNames(colnames(seurat))
 
 DimPlot(seurat, reduction = "umap", group.by = "celltype") & NoAxes()
-ggsave("Plots/8_Int_Cluster_Annotation_1.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
-
-seurat <- RenameIdents(seurat, new_ident)
-UMAPPlot(seurat, label=T, label.size = 5, label.box = TRUE) & NoAxes()
-ggsave("Plots/8_Int_Cluster_Annotation_2.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
+#ggsave("Plots/8_Int_Cluster_Annotation_1.pdf", units = "mm",  dpi = "print", width = 200, height = 150)
 
 top_peaks_ct$celltype <- celltypes[as.integer(top_peaks_ct$group)+1]
 
@@ -392,7 +389,7 @@ p2 <- CoveragePlot(seurat,
                    extend.upstream = 1000,
                    extend.downstream = 1000)
 patchwork::wrap_plots(p1, p2, ncol = 1)
-ggsave("Plots/9_CoverageMap_TH_for_Dop_C8_for_Purkinje.pdf", units = "mm",  dpi = "print", width = 250, height = 250)
+##ggsave("Plots/9_CoverageMap_TH_for_Dop_C8_for_Purkinje.pdf", units = "mm",  dpi = "print", width = 250, height = 250)
 
 p1 <- CoveragePlot(seurat,
                    region = "chr11-2171500-2172500",
@@ -458,6 +455,6 @@ p2 <- MotifPlot(seurat, motifs = enriched_motif_purkinje$motif[1:4], ncol=4)
 p3 <- MotifPlot(seurat, motifs = enriched_motif_mesen$motif[1:1], ncol=4)
 p1 / p2 / p3
 
-ggsave("Plots/10_TopPeak_MotifEnrich_Dopa_Purk_Mesen.pdf", units = "mm",  dpi = "print", width = 250, height = 200)
+##ggsave("Plots/10_TopPeak_MotifEnrich_Dopa_Purk_Mesen.pdf", units = "mm",  dpi = "print", width = 250, height = 200)
 
 save.image(file="DataAnalysis_Output.RData") 
