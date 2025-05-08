@@ -1,4 +1,4 @@
-.libPath("/cluster/home/lokaiser/miniconda3/lib/R/library")
+.libPaths("/cluster/home/lokaiser/R/x86_64-pc-linux-gnu-library/4.4")
 
 library(Seurat)
 library(Signac)
@@ -10,6 +10,7 @@ library(ggplot2)
 library(TFBSTools)
 library(JASPAR2020)
 library(doParallel)
+library(presto)
 
 setwd("~")
 
@@ -28,19 +29,15 @@ enriched_motifs_ct <- DA_motifs_ct %>%
   group_by(group)
 top_motifs_ct <- top_n(enriched_motifs_ct, 3, wt=auc)
 
-bluered_colscheme <- colorRampPalette(rev(c("#d73027","#f46d43","#fdae61","#fee090","#e0f3f8","#abd9e9","#74add1","#4575b4")))
-FeaturePlot(seurat,
-            features = top_motifs_ct$feature,
-            cols = bluered_colscheme(30),
-            reduction = "umap",
-            ncol = 3) & NoAxes() & NoLegend()
+#plot 1 location
 
 tfs <- read.table("midbrain_organoid/Homo_sapiens_TF.txt", sep="\t", header=T)
 
 tf_motifs_ct <- enriched_motifs_ct %>%
   filter(symbol %in% tfs$Symbol)
+
 marker_tfs_ct <- DE_ct %>%
-  filter(feature %in% tfs$Symbol &
+  dplyr::filter(feature %in% tfs$Symbol &
            abs(logFC) > log(1.2) &
            padj < 0.01 &
            auc > 0.65 &
@@ -48,10 +45,20 @@ marker_tfs_ct <- DE_ct %>%
   inner_join(tf_motifs_ct,
              by = c("feature" = "symbol"),
              suffix = c("_tf","_motif")) %>%
-  filter(group_tf == group_motif)
+  dplyr::filter(group_tf == group_motif)
 
 top_tfs_ct <- group_by(marker_tfs_ct, group_tf) %>%
   top_n(3, wt = auc_motif)
+
+save.image(file="Post_ChromVar_Output.RData") 
+
+bluered_colscheme <- colorRampPalette(rev(c("#d73027","#f46d43","#fdae61","#fee090","#e0f3f8","#abd9e9","#74add1","#4575b4")))
+FeaturePlot(seurat,
+            features = top_motifs_ct$feature,
+            cols = bluered_colscheme(30),
+            reduction = "umap",
+            ncol = 3) & NoAxes() & NoLegend()
+ggsave("11_TopMofifs_ChromVAR.pdf", units = "mm",  dpi = "print", width = 500, height = 600)
 
 beach_colscheme <- colorRampPalette(c("#cdcdcd","#edf8b1","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#0c2c84"))
 DefaultAssay(seurat) <- "RNA"
@@ -69,6 +76,4 @@ p2 <- FeaturePlot(seurat,
                   cols=bluered_colscheme(30),
                   ncol=6) & NoAxes() & NoLegend()
 p1 / p2
-ggsave("Plots/11_Enrich_TF_and_Celltype_ChromVAR.pdf", units = "mm",  dpi = "print", width = 300, height = 150)
-
-save.image(file="Post_ChromVar_Output.RData") 
+ggsave("12_Enrich_TF_and_Celltype_ChromVAR.pdf", units = "mm",  dpi = "print", width = 600, height = 400)
