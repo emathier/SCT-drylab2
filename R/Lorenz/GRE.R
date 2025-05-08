@@ -1,4 +1,4 @@
-.libPath("/cluster/home/lokaiser/miniconda3/lib/R/library")
+.libPaths("/cluster/home/lokaiser/R/x86_64-pc-linux-gnu-library/4.4")
 
 library(Seurat)
 library(Signac)
@@ -38,14 +38,14 @@ grn <- infer_grn(grn,
                  scale=F,
                  verbose=T)
 
-coef_grn <- coef(grn_object) %>%
+coef_grn <- coef(grn) %>%
   filter(padj < 0.01)
 
 coef_grn
 
-grn_object <- find_modules(grn_object,
+grn <- find_modules(grn,
                            p_thresh = 0.01)
-regulons <- NetworkModules(grn_object)
+regulons <- NetworkModules(grn)
 
 positive_regulons <- regulons@features[['genes_pos']]
 positive_regulons <- positive_regulons[lengths(positive_regulons) > 10]
@@ -66,6 +66,8 @@ mod_act_neg <- mod_act_neg[,grep("^regulon_", colnames(mod_act_neg))] %>%
 
 seurat[['regulon']] <- CreateAssayObject(data = t(cbind(mod_act_pos, mod_act_neg)))
 
+save.image(file="Post_Pando_GRE.RData") 
+
 DefaultAssay(seurat) <- "RNA"
 p1 <- FeaturePlot(seurat,
                   top_tfs_ct$feature,
@@ -81,6 +83,6 @@ p2 <- FeaturePlot(seurat,
                   cols = bluered_colscheme(30),
                   order = T,
                   ncol = 6) & NoAxes() & NoLegend()
-(p1 / p2) + patchwork::plot_layout(height = c(1,2))
+(p1 / p2) + patchwork::plot_layout(height = c(1.5,1))
 
-ggsave("Plots/12_GRE_DE_and_TF_regulons.pdf", units = "mm",  dpi = "print", width = 300, height = 300)
+ggsave("13_GRE_DE_and_TF_regulons.pdf", units = "in",  dpi = "print", width = 20, height = 12)
